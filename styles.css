@@ -1,0 +1,7 @@
+.faded {
+  opacity: 0.6 !important;
+}
+
+.slidev-vclick-hidden.faded-hide {
+  opacity: 0.6 !important;
+}
