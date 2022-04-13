@@ -2,6 +2,7 @@
 theme: default
 highlighter: shiki
 lineNumbers: false
+layout: intro
 info: |
   ## What the WASM?
   Demistfying Web Assembly, how it works, why it's cool
@@ -10,7 +11,7 @@ info: |
 
 # What the WASM
 
-Demistfying Web Assembly, how it works, why it's cool
+Demistfying Web Assembly, how it works, and more‽
 
 ---
 layout: center
@@ -39,20 +40,29 @@ layout: center
 </div>
 
 ---
+layout: image-left
+image: ./yew.png
+---
 
-How my brain works:
+## How did we get here?
 
-1. I was learning Rust for "Fun"
-2. I saw a Rust frontend framework - it was using WASM
-3. Huh... I wonder...
+<v-clicks>
 
-Then: 
+Playing with some Rust
 
-- What would I even use web assembly for?
-- How does web assembly even?
-- Rewind: How does assembly even?
+"Huh Rust on the frontend..."
 
-TODO: Rustacean
+...But...how?
+
+<hr class="my-10">
+
+What would I even use web assembly for?
+
+How does web assembly even?
+
+Rewind: How does assembly even?
+
+</v-clicks>
 
 <!--
 - Found a rust framework for frontend (yew.rs)
@@ -106,21 +116,22 @@ Trust: This is actually going to help us later
 -->
 
 ---
+layout: fact
+---
 
-## The conundrum
+# CPUs are smart <span class="text-green-500">**dumb**</span> things
 
-Our code => machine instructions
+How can we ever be memory safe if everything is just a CPU instruction?
 
-CPUs are smart <span class="text-green-500">**dumb**</span> things
-
-If an instruction is: "Load value from memory into register X", how could we ever make that secure?
 
 <!--
-Slide, then:
+If an instruction is: "Load value from memory into register X", how could we ever make that secure?
 
 We need an example application. How does this work in "reality"
 -->
 
+---
+layout: cover
 ---
 
 ## Hello Memory! (and C!)
@@ -333,6 +344,12 @@ Q: But how does our code know to use those `syscall`s / Aren't they target speci
 _A: Libraries! (e.g. libc, musl), Libraries everywhere, and YES_
 
 </v-click>
+
+---
+layout: fact
+---
+
+# Assembly is cool, but kernels and compilers are cooler
 
 ---
 
