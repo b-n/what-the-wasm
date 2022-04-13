@@ -81,15 +81,61 @@ Trust: This will help us later
 CPUs are smart dumb things
 
 - CPUs have a set of instructions
-- Assebmbly are those raw instructions that we send to a CPU
+- Assembly is essentially the raw machine instructions (but just easier to read)
 - But, if we are sending raw instructions to the CPU, how is this even safe?
 
 ---
 
-## Kernels
+## Let's disect
 
-- Our code compiles to assembly
-- Our code also is built against a kernel
+```c{all|7|8-10|12-14|all|7|13|16|1-2}
+#include <stdio.h>
+#include <stdlib.h>
+
+const int arr_size = 10;
+
+int main() {
+  int *array = malloc(arr_size * sizeof(int));
+  for (int i = 0; i < arr_size; i++) {
+    array[i] = i * 2;
+  }
+
+  for (int i = arr_size - 1; i >= 0; i--) {
+    printf("%d", array[i]);
+  }
+
+  free(array);
+}
+```
+
+<!--
+We can understand a for loop, and that we're allocating memory. But:
+- Where does malloc even get it's memory from to malloc?
+- Can I just access any memory anywhere?
+- Wait, what does this printf even do?
+- How does it know what stdout even is?
+
+Answers: Thank you libc
+-->
+
+---
+
+## Syscalls and Kernels!
+
+THANK YOU KERNEL!
+
+In short, libc is specific to the target*.
+
+When starting an application, we're asking the kernel to execute our binary.
+
+That binary (our application), is compiled with libc. That Libc has methods which
+call out to the kernel. i.e. our application relies the kernel.
+
+So since we're playing nice with the kernel, you'll generally find that we're
+making calls (aka syscalls) to the kernel. This helps us, because now we can 
+get dynamic memory that plays fair with others, and stdout and stdin actually
+mean something!
+
 - Hello LibC and stdio.h
 
 - Cool facts, let's check C => assembly
