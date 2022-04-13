@@ -214,11 +214,12 @@ In web assembly.....???
 2. Library implements `malloc`
 3. `malloc` allocates/returns "memory" (pointers!)
 
+<v-click>
+
 **But what does malloc\* do?**
 
 - You want memory? Here's the address for some memory (pointer)
 - "I don't have enough memory?" - Let me make a `syscall`\*\* and manage what comes back
-
 
 <footer>
   <sup>
@@ -228,6 +229,8 @@ In web assembly.....???
     **: Depending on the target arch
   </sup>
 </footer>
+
+</v-click>
 
 <!--
 Summary:
