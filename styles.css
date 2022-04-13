@@ -5,3 +5,8 @@
 .slidev-vclick-hidden.faded-hide {
   opacity: 0.6 !important;
 }
+
+footer {
+  position: absolute;
+  bottom: 1em;
+}

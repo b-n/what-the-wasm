@@ -74,79 +74,277 @@ image: ./assembly.JPG
 
 ---
 
-## What _is_ Assembly?
+## What really _is_ Assembly?
 
-Trust: This will help us later
+CPUs are <span class="text-green-500">**smart**</span> dumb things
 
-CPUs are smart dumb things
+<div class="py-4">
 
-- CPUs have a set of instructions
-- Assembly is essentially the raw machine instructions (but just easier to read)
-- But, if we are sending raw instructions to the CPU, how is this even safe?
+<v-clicks>
 
----
+- CPUs only understand specific instructions
+- We want to do "instructions"
+- `1 || 0 || "what?"`
 
-## Let's disect
+</v-clicks>
 
-```c{all|7|8-10|12-14|all|7|13|16|1-2}
-#include <stdio.h>
-#include <stdlib.h>
+</div>
 
-const int arr_size = 10;
+<div class="text-xl" v-click>
 
-int main() {
-  int *array = malloc(arr_size * sizeof(int));
-  for (int i = 0; i < arr_size; i++) {
-    array[i] = i * 2;
-  }
+Assembly: A human readable verison of the raw machine instructions*
 
-  for (int i = arr_size - 1; i >= 0; i--) {
-    printf("%d", array[i]);
-  }
+<footer>
+  <sup>*: This comes with many more asterisks</sup>
+</footer>
 
-  free(array);
-}
-```
+</div>
+
 
 <!--
-We can understand a for loop, and that we're allocating memory. But:
-- Where does malloc even get it's memory from to malloc?
-- Can I just access any memory anywhere?
-- Wait, what does this printf even do?
-- How does it know what stdout even is?
-
-Answers: Thank you libc
+Trust: This is actually going to help us later
 -->
 
 ---
 
-## Syscalls and Kernels!
+## The conundrum
 
-THANK YOU KERNEL!
+Our code => machine instructions
 
-In short, libc is specific to the target*.
+CPUs are smart <span class="text-green-500">**dumb**</span> things
 
-When starting an application, we're asking the kernel to execute our binary.
+If an instruction is: "Load value from memory into register X", how could we ever make that secure?
 
-That binary (our application), is compiled with libc. That Libc has methods which
-call out to the kernel. i.e. our application relies the kernel.
+<!--
+Slide, then:
 
-So since we're playing nice with the kernel, you'll generally find that we're
-making calls (aka syscalls) to the kernel. This helps us, because now we can 
-get dynamic memory that plays fair with others, and stdout and stdin actually
-mean something!
+We need an example application. How does this work in "reality"
+-->
 
-- Hello LibC and stdio.h
+---
 
-- Cool facts, let's check C => assembly
+## Hello Memory! (and C!)
 
-- Did you know you can invent your own malloc?
-- Did you know LibC isn't actually doesn't follow the C standard?
-- How much are we reliant on libc?
+```c{all|6|4,7|8-10|12-14|16-17|all|7|13|16|1-2}
+#include <stdio.h>
+#include <stdlib.h>
 
-Why is this even important?
+const int ARR_LEN = 10;
 
-- Web assembly
+int main() {
+  int *array = malloc(ARR_LEN * sizeof(int));
+  for (int i = 0; i < ARR_LEN; i++) {
+    array[i] = i * 2;
+  }
+
+  for (int i = ARR_LEN - 1; i >= 0; i--) {
+    printf("%d", array[i]);
+  }
+
+  free(array);
+  return 0;
+}
+```
+
+<!--
+Our app:
+- declares some dynamic memory for an array
+- fills that array with the index * 2
+- prints each item in that array (backwards)
+- cleans up the app (freeing the memory, and exiting)
+
+But:
+- How does malloc even?
+- What is printf even printing to? What is STDOUT?
+- free the memory? free it back to what/whom?
+
+Answers: Thank you libraries!
+-->
+
+---
+
+## Getting to the brain cells!
+
+**Example**: `void* malloc(size_t n)` AKA Our code wants memory!
+
+What we know:
+
+- We're on a shared system (e.g. many applications on one computer)
+- We want some memory
+- We want that memory to be safe
+
+<v-click>
+
+<hr class="mt-5">
+
+`gcc -S -fverbose-asm malloc.c`
+
+```asm{all|6}
+# malloc.c:7:   int *array = malloc(ARR_LEN * sizeof(int));
+	movl	$10, %eax	#, ARR_LEN.0_1
+	cltq
+	salq	$2, %rax	#, _3
+	movq	%rax, %rdi	# _3,
+	call	malloc@PLT	#
+	movq	%rax, -8(%rbp)	# tmp97, array
+```
+
+</v-click>
+
+<!--
+⚠️ This is actually the most relevant slide about assembly
+What we're trying to say with this:
+- Assembly is instructions to the machine
+- Our code actually doesn't call the CPU directly
+- The kernel gets in the way, because the compiler is calling our shared malloc lib
+- Kernel "makes it safe"
+
+
+Why is this relevant? Because compilers compile to a target. In linux, malloc will do sys calls.
+In web assembly.....???
+-->
+
+---
+
+## DEEPER!
+
+**Summary:**
+
+1. Code => `malloc`
+2. Library implements `malloc`
+3. `malloc` allocates/returns "memory" (pointers!)
+
+**But what does malloc\* do?**
+
+- You want memory? Here's the address for some memory (pointer)
+- "I don't have enough memory?" - Let me make a `syscall`\*\* and manage what comes back
+
+
+<footer>
+  <sup>
+    *: Talking specifically about libc here
+  </sup><br>
+  <sup>
+    **: Depending on the target arch
+  </sup>
+</footer>
+
+<!--
+Summary:
+- Our code calls malloc
+- Compiler makes sure that our code calls out to stdlib malloc function
+- Malloc ensures we have some memory, and tells us where it is
+-->
+
+---
+
+## FINALLY, the final boss: `syscall`s!
+
+What memory can I use? => `syscall`
+
+<v-click>
+
+```mermaid {theme: 'dark', scale: 0.6}
+sequenceDiagram
+  participant C as code.c
+  participant L as stdlib
+  participant K as kernel
+  participant M as Computron 3000
+
+  C->>L: malloc()
+  rect rgb(33, 33, 33)
+  note over L: Black Magic
+  L->>K: mmap [syscall]
+  K->>M: mov|jump|etc
+  M->>K: mov|jump|things
+  K->>L: 0xdeadbeef (ptr)
+  end
+  L->>C: managed (ptr)
+```
+
+</v-click>
+
+<v-click>
+
+Our code (assembly) doesn't talk to the machine directly, we talk to the kernel!
+
+</v-click>
+
+<!--
+How does malloc know what memory it can use? a syscall will get that from the kernel
+
+The full path:
+- application calls malloc
+- library implements malloc to use syscalls
+- sys call returns some memory address to library
+- the library manages that block of memory
+- Our code manages that block
+-->
+
+---
+
+## Summary
+
+<div class="py-4">
+
+> Rewind: How does assembly Even?
+
+</div>
+
+<v-click>
+
+**Q: What is assembly?**
+
+</v-click>
+
+<v-click>
+
+_A: It's a human readable verison of machine instructions to control our CPU_
+
+<hr>
+
+</v-click>
+
+<v-click>
+
+Q: How is this eventually safe (e.g memory)?
+
+</v-click>
+
+<v-click>
+
+_A: `syscall`s and trusting the kernel to manage it_
+
+<hr>
+
+</v-click>
+
+<v-click>
+
+Q: But how does our code know to use those `syscall`s / Aren't they target specific?
+
+</v-click>
+
+<v-click>
+
+_A: Libraries! (e.g. libc, musl), Libraries everywhere, and YES_
+
+</v-click>
+
+---
+
+## Bonus [headaches]
+
+Did you know?
+
+<v-clicks>
+
+- You can write your own malloc function
+- libc doesn't always follow the C standard
+- Alpine linux uses `musl` instead of `libc`
+- A bunch of libraries/applications [sometimes inadvertently] rely on special `libc` functionality and will give you many many headaches?
+
+</v-clicks>
 
 ---
 layout: image-right
