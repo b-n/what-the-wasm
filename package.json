@@ -1,5 +1,4 @@
 {
-  "private": true,
   "scripts": {
     "build": "slidev build --base /what-the-wasm/",
     "dev": "slidev --open",
@@ -7,9 +6,8 @@
     "publish": "gh-pages -d dist"
   },
   "dependencies": {
-    "@slidev/cli": "^0.29.2",
-    "@slidev/theme-default": "*",
-    "@slidev/theme-seriph": "*"
+    "@slidev/cli": "^0.30.0",
+    "@slidev/theme-default": "^0.21.2"
   },
   "name": "what-the-wasm",
   "devDependencies": {
