@@ -378,11 +378,20 @@ image: ./assembly.JPG
 
 ---
 
-:drake_no: Assembly
+## Flow brainstorm
 
-:drake_yes: C
-
-Let's hello console!
+- We can start by forgetting about assembly. We aren't going to write assembly
+- Why do we use higher level languages (why even use c/c++/ruby etc)? It helps us express designs
+- What really is web assembly?
+  - instead of compiling to machine code for a specific architecture, we compile to web assembly
+  - web assembly is a standard across many archs (because it's web, and web don't care)
+  - web assembly aims to give near native performance, instead of interpreted perf (like js/ruby/python)
+- Why did we go into that nonsense about Assembly then?
+  - Just because it has the word "assembly" in it doesn't mean everything works OOTB (libc)
+  - We are considering a new target, and that means libraries need to understand that new target (not just our linux kernel)
+  - e.g. malloc? How does that work? Is it going to the web assembly parser or the kernel. Yes
+- [hopefully] we can run a bit of web assembly in an iframe
+- [hopefully] we can perf test sometimes stupid like 1 + 1 over a million iterations
 
 ---
 layout: image-right
@@ -393,25 +402,22 @@ image: ./assembly.JPG
 
 <p class="faded">Rewind: How does assembly even?</p>
 <p v-click-hide class="faded-hide">How does web assembly even?</p>
-<p v-after>What would  even use web assembly for?</p>
+<p v-after>What would even use web assembly for?</p>
 
 ---
 
-# MARKDOWN
-Audience: Developers
-Assumption:
-- People know what assembly is, but never use it
-- People have heard of web assembly, but it's vague
+## Flow brainstorm/thoughts
 
-Goals:
-- What web assembly is, how does it work
-- What problems does it solve?
+- What are the use cases
+- Is this not just a new JVM?
+- Where could we use this in Catawiki?
+  - Image adjustment/compression client side? View changes live?
+  - Bid engine, is WASM better with websockets?
+  - ~95% of users are on browsers supporting WASM. Would we need fallbacks?
+- Wasmer/Wasmtime - Use a generic target?
+  - Make our apps based on WASM targets? Run our backend on a frontend? chaos?
+- Frontends in different languages?
+  - Why write a different language if everyone knows JS?
+  - A: Why do we use different languages on the backend?
 
-Caveats:
-- Is it the new JVM?
-
-Structure
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
+  
