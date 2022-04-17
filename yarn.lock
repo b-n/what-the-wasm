@@ -2488,7 +2488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gh-pages@npm:gh-pages@*":
+"gh-pages@npm:^3.2.3":
   version: 3.2.3
   resolution: "gh-pages@npm:3.2.3"
   dependencies:
