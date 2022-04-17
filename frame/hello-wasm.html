@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/slidevjs/slidev/assets/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Avenir+Next:wght@200;400;600&display=swap" type="text/css">
+  <style>
+    * {
+      font-family: "Avenir Next";
+      font-size: 1.3em;
+      line-height: 1.3em;
+    }
+    body {
+      background-color: #FFF;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div>Hello WASM</div>
+  
+  <button id="add">Click Me!</button><br>
+  Count: <span id="count">0</span>
+
+  <script type="module">
+    let adder;
+    async function init() {
+      const { instance } =
+        await WebAssembly.instantiateStreaming(
+          fetch("./add1.wasm")
+        );
+
+      adder = instance.exports.add1;
+    }
+    init();
+
+    const button = document.getElementById("add");
+    const count = document.getElementById("count");
+    button.addEventListener("click", () => {
+      const val = +count.innerHTML;
+      count.innerHTML = adder(val);
+    })
+    </script>
+  </body>
+  </html>
