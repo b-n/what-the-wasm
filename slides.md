@@ -377,6 +377,36 @@ image: ./assembly.JPG
 <p v-after>How does web assembly even?</p>
 
 ---
+layout: iframe-right
+url: /what-the-wasm/frame/hello-wasm.html
+---
+
+# Hello WASM
+
+```js{0|1-9|10-16}
+let adder;
+async function init() {
+  const { instance } =
+    await WebAssembly.instantiateStreaming(
+      fetch("./add1.wasm")
+    );
+  adder = instance.exports.add1;
+}
+init();
+
+const button = document.getElementById("add");
+const count = document.getElementById("count");
+button.addEventListener("click", () => {
+  const val = +count.innerHTML;
+  count.innerHTML = adder(val);
+})
+```
+
+<!--
+Let's forget assembly for a moment, and lets run some wasm
+-->
+
+---
 
 ## Flow brainstorm
 
