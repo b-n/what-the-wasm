@@ -697,8 +697,20 @@ image: ./assembly.JPG
 
 ---
 
+## Play Doom?
+
+https://wadcmd.com/
+
+---
+
 ## Flow brainstorm/thoughts
 
+How do we use WASM?
+ - Which langauge do we pick?
+  - Which language do we pick anyway in the real world?
+    - Ruby/Python/Rust/Java/PHP/Javascript/Typescript backend?
+    - Javascript/Typescript frontend?
+- Can we compiled NodeJS to Web assembly, and then use Javascript processor in Web assembly?
 - What are the use cases
 - Is this not just a new JVM?
 - Where could we use this in Catawiki?
@@ -711,4 +723,12 @@ image: ./assembly.JPG
   - Why write a different language if everyone knows JS?
   - A: Why do we use different languages on the backend?
 
-  
+---
+
+## Acknowledgements
+
+Surma @dassurma - Specifically his article on [Compiling C to Web Assembly without Emscriptem](https://surma.dev/things/c-to-webassembly/index.html)
+
+Ryan Lopopolo @_lopopolo - Creator of Artichoke (Ruby on Rust), which targets WASM as a build target!
+
+Everyone on stackoverflow over the last million years asking questions like what I've tried to answer in this presentation
