@@ -35,12 +35,12 @@
     }
     init();
 
-    const button = document.getElementById("add");
     const count = document.getElementById("count");
-    button.addEventListener("click", () => {
-      const val = +count.innerHTML;
-      count.innerHTML = adder(val);
-    })
+    document.getElementById("add")
+      .addEventListener("click", () => {
+        const val = +count.innerHTML;
+        count.innerHTML = adder(val);
+      });
     </script>
   </body>
   </html>

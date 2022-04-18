@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/slidevjs/slidev/assets/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Avenir+Next:wght@200;400;600&display=swap" type="text/css">
+  <style>
+    * {
+      font-family: "Avenir Next";
+      font-size: 1em;
+      line-height: 1em;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    td,th {
+      border: 1px solid #333;
+      padding: 3px 5px;
+    }
+    .right {
+      text-align: right;
+    }
+    body {
+      background-color: #FFF;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div style="margin-bottom: 10px">
+    <label for="sum-to">Sum to:</label>
+    <input id="sum-to" type="number" value="1000">
+    <button id="run">GO!</button>
+  </div>
+
+  <table>
+    <tr>
+      <th>Type</th>
+      <th>Time</th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td>JS</td>
+      <td class="right" id="sum-reduce-js"></td>
+      <td class="right" id="sum-reduce-js-result"></td>
+    </tr>
+    <tr>
+      <td>WASM -O0</td>
+      <td class="right" id="sum-reduce-wasm-unopt"></td>
+      <td class="right" id="sum-reduce-wasm-unopt-result"></td>
+    </tr>
+    <tr>
+      <td>WASM -O3</td>
+      <td class="right" id="sum-reduce-wasm-opt"></td>
+      <td class="right" id="sum-reduce-wasm-opt-result"></td>
+    </tr>
+  </table>
+
+
+  <script type="module">
+    const sumReduce = (to) => {
+      let total = 0;
+      for (let i = 0; i <= to; i++) {
+        total += i;
+      }
+      return total;
+    }
+
+    const adders = {
+      js: {
+        fn: sumReduce,
+        elem: 'sum-reduce-js',
+      },
+      wasmUnopt: {
+        fn: null,
+        elem: 'sum-reduce-wasm-unopt',  
+      },
+      wasmOpt: {
+        fn: null,
+        elem: 'sum-reduce-wasm-opt',
+      }
+    }
+
+    async function init() {
+      const unopt = await WebAssembly.instantiateStreaming(fetch("./sum_reduce-noopt.wasm"));
+      const opt = await WebAssembly.instantiateStreaming(fetch("./sum_reduce.wasm"));
+      
+      adders.wasmUnopt.fn = unopt.instance.exports.sum_reduce;
+      adders.wasmOpt.fn = opt.instance.exports.sum_reduce;
+    }
+    init();
+
+    document.getElementById("run").addEventListener("click", () => {
+      const to = +document.getElementById("sum-to").value;
+      Object.keys(adders).map((key) => {
+        const { fn, elem } = adders[key];
+        const t0 = performance.now();
+        const result = fn(to); 
+        const t1 = performance.now();
+        document.getElementById(elem).innerHTML = (t1 - t0).toFixed(2);
+        document.getElementById(`${elem}-result`).innerHTML = result;
+      })      
+    });
+    </script>
+  </body>
+  </html>
