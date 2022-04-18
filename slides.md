@@ -547,17 +547,102 @@ Heap size = `__heap_base` => ∞
 
 </v-clicks>
 
+---
+
+## Spot the difference
+
+```mermaid{theme: 'dark'}
+flowchart LR
+  subgraph asm [Assembly]
+    asm_code(our_code.c)
+    asm_library(stdlib.h)
+    asm_kernel(kernel)
+    asm_computer(Computron 3000)
+    asm_code     --"malloc()"    --> asm_library
+    asm_library  --"managed &ptr"--> asm_code
+    asm_library  --"syscalls"    --> asm_kernel
+    asm_kernel   --"0xdeadbeef"  --> asm_library
+    asm_kernel   --"mov|set|jmp" --> asm_computer
+    asm_computer --"mov|set|jmp" --> asm_kernel
+  end
+
+  subgraph wasm [WASM]
+    wasm_code(our_code.c)
+    wasm_runtime(browser)
+    subgraph wasm_bm [Black magic]
+      direction TB
+      wasm_kernel(kernel)
+      wasm_computer(computer)
+    end
+    wasm_code     --"__heap_base" --> wasm_runtime
+    wasm_runtime  --"0xdeadbeef"  --> wasm_code
+    wasm_runtime  --"???"         --> wasm_bm
+    wasm_bm   --"???"         --> wasm_runtime
+    wasm_kernel   --"???"         --> wasm_computer
+    wasm_computer --"???"         --> wasm_kernel
+  end
+
+  asm --> wasm
+```
+
+<!--
+In the first part of this talk, we had a graph similar to this.
+ -> code => lib => kernel => cpu
+In our web assembly world, we just have memory. huh?
+
+
+Congratulations, our WASM didn't have the stdlib.h!
+-->
+
+---
+
+## So... Let's just use stdlib!
+
 <v-click>
 
+**WAIT JUST ONE HOT DAMN MINUTE PARTNER**
 
-But, it doesn't look like assembly, how is it fast?
+</v-click>
+
+<v-clicks>
+
+- We have a pesky browser in the middle
+- Our memory model is different
+- Specifically: We don't have access to the kernel, so what is libc even going to do?
+
+</v-clicks>
+
+<hr v-click class="my-10">
+
+<v-after>
+
+Options:
+
+</v-after>
+
+<v-clicks>
+
+- Write our own malloc
+- Emscriptem
+
+</v-clicks>
+
+<v-click>
+
+^-- Both of these topics are "another day" topics
+
+</v-click>
+
+<v-click>
+
+Suffice to say:, WASM is a new form of ASM - that's designed to be cross platform
 
 </v-click>
 
 <!--
-Last point:
-  But it doesn't look like assembly
-  How fast can it pedal a CPU cycle then?
+- This is where the WASM standard matters, and how people implement that standard
+
+WASM has the ideals of "new native" performance. So how fast really is it?
 -->
 
 ---
@@ -570,7 +655,7 @@ url: /what-the-wasm/frame/speed.html
 `sum-reduce.js`
 
 ```js
-const add1b = (to) => {
+const sumReduce = (to) => {
   let total = 0;
   for (let i = 0; i < to; i++) {
     total += i;
@@ -592,21 +677,12 @@ long long sum_reduce(int to) {
 ```
 
 ---
+layout: fact
+---
 
-## Flow brainstorm
+In short:
 
-- We can start by forgetting about assembly. We aren't going to write assembly
-- Why do we use higher level languages (why even use c/c++/ruby etc)? It helps us express designs
-- What really is web assembly?
-  - instead of compiling to machine code for a specific architecture, we compile to web assembly
-  - web assembly is a standard across many archs (because it's web, and web don't care)
-  - web assembly aims to give near native performance, instead of interpreted perf (like js/ruby/python)
-- Why did we go into that nonsense about Assembly then?
-  - Just because it has the word "assembly" in it doesn't mean everything works OOTB (libc)
-  - We are considering a new target, and that means libraries need to understand that new target (not just our linux kernel)
-  - e.g. malloc? How does that work? Is it going to the web assembly parser or the kernel. Yes
-- [hopefully] we can run a bit of web assembly in an iframe
-- [hopefully] we can perf test sometimes stupid like 1 + 1 over a million iterations
+## It's heckin' fast when used properly
 
 ---
 layout: image-right
