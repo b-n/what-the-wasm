@@ -59,7 +59,7 @@
 
 
   <script type="module">
-    const addReduce = (to) => {
+    const sumReduce = (to) => {
       let total = 0;
       for (let i = 0; i <= to; i++) {
         total += i;
@@ -69,7 +69,7 @@
 
     const adders = {
       js: {
-        fn: addReduce,
+        fn: sumReduce,
         elem: 'sum-reduce-js',
       },
       wasmUnopt: {
