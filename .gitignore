@@ -5,3 +5,8 @@ dist
 index.html
 .remote-assets
 components.d.ts
+
+ref/*.wasm
+ref/*.wat
+ref/*.s
+public/frame/*.wasm

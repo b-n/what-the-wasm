@@ -377,34 +377,219 @@ image: ./assembly.JPG
 <p v-after>How does web assembly even?</p>
 
 ---
+layout: quote
+---
+
+# Let's forget Assembly for a moment
+
+---
 layout: iframe-right
 url: /what-the-wasm/frame/hello-wasm.html
 ---
 
 # Hello WASM
 
-```js{0|1-9|10-16}
+```c{0|all}
+int add1(int i) {
+  return i + 1;
+}
+```
+
+```js{0|1-11|12-17}
 let adder;
 async function init() {
   const { instance } =
     await WebAssembly.instantiateStreaming(
       fetch("./add1.wasm")
     );
+
   adder = instance.exports.add1;
 }
 init();
 
-const button = document.getElementById("add");
 const count = document.getElementById("count");
-button.addEventListener("click", () => {
-  const val = +count.innerHTML;
-  count.innerHTML = adder(val);
-})
+document.getElementById("add")
+  .addEventListener("click", () => {
+    const val = +count.innerHTML;
+    count.innerHTML = adder(val);
+  });
 ```
 
 <!--
-Let's forget assembly for a moment, and lets run some wasm
+Description:
+- We have a page
+- We click a button, the counter goes up
+- But it's controlled through this C code instead! (well the adding is)
+
+And this is the JS that's driving it:
+- We load the wasm file, and assign our adder
+- Then on every button click, we get the value of the box, and set it to the result of our added
 -->
+
+---
+layout: two-cols
+---
+
+## Where did `add1.wasm` come from?
+
+The Worls Most ~~Complex~~ Simple app:
+
+`add1.c`
+
+```c
+int add1(int i) {
+  return i + 1;
+}
+```
+
+With some complex things:
+```sh{all|1|2|5-6|8-9|3-4,7}
+clang --target=wasm32 \
+  -nostdlib \
+  -O3 \
+  -flto \
+  -Wl,--no-entry \
+  -Wl,--export-all \
+  -Wl,--lto-O3 \
+  -o add1.wasm \
+  add1.c
+```
+
+::right::
+
+`wasm2wat add1.wasm`
+
+```wasm{0|all|5-8}
+(module
+  (type (;0;) (func))
+  (type (;1;) (func (param i32) (result i32)))
+  (func $__wasm_call_ctors (type 0))
+  (func $add1 (type 1) (param i32) (result i32)
+    local.get 0
+    i32.const 1
+    i32.add)
+  (memory (;0;) 2)
+  (global $__stack_pointer (mut i32) (i32.const 66560))
+  (global (;1;) i32 (i32.const 1024))
+  (global (;2;) i32 (i32.const 1024))
+  (global (;3;) i32 (i32.const 1024))
+  (global (;4;) i32 (i32.const 66560))
+  (global (;5;) i32 (i32.const 0))
+  (global (;6;) i32 (i32.const 1))
+  (export "memory" (memory 0))
+  (export "__wasm_call_ctors" (func $__wasm_call_ctors))
+  (export "add1" (func $add1))
+  (export "__dso_handle" (global 1))
+  (export "__data_end" (global 2))
+  (export "__global_base" (global 3))
+  (export "__heap_base" (global 4))
+  (export "__memory_base" (global 5))
+  (export "__table_base" (global 6)))
+```
+
+<!--
+- Generation command
+- Use wasm2wat to generate some human readable wasm
+- This is our actual function in web assembly
+-->
+
+---
+layout: two-cols
+---
+
+## Memory - EXPOSED
+
+```wasm{all|9,11,18,20}
+(module
+  (type (;0;) (func))
+  (type (;1;) (func (param i32) (result i32)))
+  (func $__wasm_call_ctors (type 0))
+  (<our func>)
+  (memory (;0;) 2)
+  (global $__stack_pointer (mut i32) (i32.const 66560))
+  (global (;1;) i32 (i32.const 1024))
+  (global (;2;) i32 (i32.const 1024))
+  (global (;3;) i32 (i32.const 1024))
+  (global (;4;) i32 (i32.const 66560))
+  (global (;5;) i32 (i32.const 0))
+  (global (;6;) i32 (i32.const 1))
+  (export "memory" (memory 0))
+  (export "__wasm_call_ctors" (func $__wasm_call_ctors))
+  (export "add1" (func $add1))
+  (export "__dso_handle" (global 1))
+  (export "__data_end" (global 2))
+  (export "__global_base" (global 3))
+  (export "__heap_base" (global 4))
+  (export "__memory_base" (global 5))
+  (export "__table_base" (global 6)))
+```
+
+::right::
+
+<div class="py-10"></div>
+
+<v-clicks>
+
+- Assembly: we were making syscalls for malloc
+- WASM: we have access to these variables which define the size/location of our stack/heap
+
+<p>
+
+Stack Size = `__heap_base` - `__data_end`
+
+</p>
+
+<p>
+
+Heap size = `__heap_base` => ∞
+
+</p>
+
+</v-clicks>
+
+<v-click>
+
+
+But, it doesn't look like assembly, how is it fast?
+
+</v-click>
+
+<!--
+Last point:
+  But it doesn't look like assembly
+  How fast can it pedal a CPU cycle then?
+-->
+
+---
+layout: iframe-right
+url: /what-the-wasm/frame/speed.html
+---
+
+## Software drag racing 
+
+`sum-reduce.js`
+
+```js
+const add1b = (to) => {
+  let total = 0;
+  for (let i = 0; i < to; i++) {
+    total += i;
+  }
+  return total;
+}
+```
+
+`sum_reduce.c`
+
+```c
+long long sum_reduce(int to) {
+  long long total = 0;
+  for (int i = 0; i <= to; i++) {
+    total += i;
+  }
+  return total;
+}
+```
 
 ---
 
