@@ -699,29 +699,93 @@ image: ./assembly.JPG
 
 ## Play Doom?
 
-https://wadcmd.com/
+Speaking of Emscriptem: https://wadcmd.com/
 
 ---
 
-## Flow brainstorm/thoughts
+## On the frontend?
 
-How do we use WASM?
- - Which langauge do we pick?
-  - Which language do we pick anyway in the real world?
-    - Ruby/Python/Rust/Java/PHP/Javascript/Typescript backend?
-    - Javascript/Typescript frontend?
-- Can we compiled NodeJS to Web assembly, and then use Javascript processor in Web assembly?
-- What are the use cases
-- Is this not just a new JVM?
-- Where could we use this in Catawiki?
-  - Image adjustment/compression client side? View changes live?
-  - Bid engine, is WASM better with websockets?
-  - ~95% of users are on browsers supporting WASM. Would we need fallbacks?
-- Wasmer/Wasmtime - Use a generic target?
-  - Make our apps based on WASM targets? Run our backend on a frontend? chaos?
-- Frontends in different languages?
-  - Why write a different language if everyone knows JS?
-  - A: Why do we use different languages on the backend?
+IMO, this is a "bad idea" [for now].
+
+<v-clicks>
+
+- ~95% browser support (caniuse.com)
+- Do you Rust? On ThE fRoNtEnD?!?!
+- Ecosystem
+
+</v-clicks>
+
+<v-click>
+
+But Yew want to yews this: https://yew.rs/
+
+</v-click>
+
+<v-click>
+
+<hr class="py-2">
+
+**[MASSIVE OPINION]** Why even pick another language?
+
+</v-click>
+
+<v-clicks>
+
+- ~~Perf?~~
+- ~~Dev Ex~~ 
+- ~~Time to production~~
+- 📈📈📈 Expression 📈📈📈
+
+</v-clicks>
+
+<!--
+Which langauge do we pick?
+- Which language do we pick anyway in the real world?
+  - Ruby/Python/Rust/Java/PHP/Javascript/Typescript backend?
+  - Javascript/Typescript frontend?
+-->
+
+---
+layout: center
+---
+
+<img src="https://i.imgflip.com/6d42qk.jpg" style="height: 500px;">
+
+---
+
+## The backend of the frontend
+
+Some examples/ideas:
+
+- Autocad
+- Figma
+- Client-side neural networks (image recognition prior to upload)
+
+---
+
+## Where could we use this in Catawiki?
+
+- Image adjustment/compression on the client - view changes live before submission
+- Bid engine. is WASM better with websockets?
+- `<your idea here>`
+
+Note: Fallback support?
+
+---
+
+## Broadening horizons
+
+If you can JS without a browser with NodeJS
+
+THEN
+
+You can WASM without a browser with wasmtime or wasmer
+
+Why?
+
+Single target, compiled on any platform, running on "any platform"
+
+Wait for WASI though.
 
 ---
 
