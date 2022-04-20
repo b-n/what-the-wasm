@@ -696,6 +696,8 @@ image: ./assembly.JPG
 <p v-after>What would even use web assembly for?</p>
 
 ---
+layout: cover
+---
 
 ## Play Doom?
 
@@ -709,7 +711,7 @@ IMO, this is a "bad idea" [for now].
 
 <v-clicks>
 
-- ~95% browser support (caniuse.com)
+- ~91% users with browser support (caniuse.com)
 - Do you Rust? On ThE fRoNtEnD?!?!
 - Ecosystem
 
@@ -757,16 +759,24 @@ layout: center
 
 Some examples/ideas:
 
-- Autocad
-- Figma
-- Client-side neural networks (image recognition prior to upload)
+**AutoCAD**
+
+> The AutoCAD web app uses emscripten to port pieces from the > 35 years old native application for AutoCAD.
+
+**Figma**
+
+> Because our product is written in C++, which can easily be compiled into WebAssembly, Figma is a perfect demonstration of this new format’s power.
+
+**TensorFlow**
+
+> WASM is generally much faster than JavaScript for numeric workloads common in machine learning tasks. Additionally, WASM can be natively decoded up to 20x faster than JavaScript can be parsed.
 
 ---
 
 ## Where could we use this in Catawiki?
 
 - Image adjustment/compression on the client - view changes live before submission
-- Bid engine. is WASM better with websockets?
+- Bid engine. Is WASM better with websockets?
 - `<your idea here>`
 
 Note: Fallback support?
@@ -777,9 +787,15 @@ Note: Fallback support?
 
 If you can JS without a browser with NodeJS
 
+<v-click>
+
 THEN
 
 You can WASM without a browser with wasmtime or wasmer
+
+</v-click>
+
+<v-click>
 
 Why?
 
@@ -787,12 +803,22 @@ Single target, compiled on any platform, running on "any platform"
 
 Wait for WASI though.
 
+</v-click>
+
+---
+layout: cover
 ---
 
 ## Acknowledgements
 
-Surma @dassurma - Specifically his article on [Compiling C to Web Assembly without Emscriptem](https://surma.dev/things/c-to-webassembly/index.html)
+Surma @dassurma 
 
-Ryan Lopopolo @_lopopolo - Creator of Artichoke (Ruby on Rust), which targets WASM as a build target!
+- Specifically his article on [Compiling C to Web Assembly without Emscriptem](https://surma.dev/things/c-to-webassembly/index.html)
+- https://surma.dev/
+
+Ryan Lopopolo @_lopopolo
+
+- Creator of Artichoke (Ruby on Rust), which targets WASM as a build target!
+- https://www.artichokeruby.org/
 
 Everyone on stackoverflow over the last million years asking questions like what I've tried to answer in this presentation
