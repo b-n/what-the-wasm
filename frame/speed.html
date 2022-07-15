@@ -92,7 +92,7 @@
     init();
 
     document.getElementById("run").addEventListener("click", () => {
-      const to = +document.getElementById("sum-to").value;
+      const to = BigInt(+document.getElementById("sum-to").value);
       Object.keys(adders).map((key) => {
         const { fn, elem } = adders[key];
         const t0 = performance.now();
