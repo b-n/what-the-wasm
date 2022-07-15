@@ -6,11 +6,11 @@
     "publish": "gh-pages -d dist"
   },
   "dependencies": {
-    "@slidev/cli": "^0.30.0",
+    "@slidev/cli": "^0.34.3",
     "@slidev/theme-default": "^0.21.2"
   },
   "name": "what-the-wasm",
   "devDependencies": {
-    "gh-pages": "^3.2.3"
+    "gh-pages": "^4.0.0"
   }
 }

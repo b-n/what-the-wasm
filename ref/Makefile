@@ -4,34 +4,35 @@
 
 WASM_OUTPUTS = add1.wasm sum_reduce.wasm sum_reduce-noopt.wasm
 
-all: clean add1.wat malloc copy
+all: clean add1.wat malloc malloc_expanded copy
 
 clean:
 	rm -f *.wat
 	rm -f *.wasm
 	rm -f *.s
+	rm -f ./malloc
+	rm -f ./malloc_expanded
 
 malloc:
-	gcc -S -fverbose-asm -o malloc.s malloc.c
+	rustc malloc.rs
+
+malloc_expanded:
+	rustc malloc_expanded.rs
 
 sum_reduce-noopt.wasm:
-	clang --target=wasm32 \
-    -nostdlib \
-		-Wl,--no-entry \
-		-Wl,--export-all \
-		-o $@ \
-		sum_reduce.c
+	rustc \
+	  --target wasm32-unknown-unknown \
+		-Copt-level=0 \
+		-o sum_reduce-noopt.wasm \
+		sum_reduce.rs
 
 %.wasm:
-	clang --target=wasm32 \
-    -nostdlib \
-		-O3 \
-		-flto \
-		-Wl,--no-entry \
-		-Wl,--export-all \
-		-Wl,--lto-O3 \
+	rustc \
+	  --target wasm32-unknown-unknown \
+		-Copt-level=3 \
+		-Clto \
 		-o $@ \
-		$(basename $@).c
+		$(basename $@).rs
 
 %.wat: $(basename %).wasm
 	wasm2wat $(basename $@).wasm > $@
