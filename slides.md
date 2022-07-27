@@ -384,12 +384,6 @@ The full path:
 -->
 
 ---
-layout: fact
----
-
-## What if we had _one_ kernel that was understood by _all_ platforms, and could run things _anywhere_?
-
----
 
 ## Summary
 
@@ -431,6 +425,13 @@ _A: Libraries! Libraries everywhere, and YES_
 
 </v-clicks>
 
+<!--
+We started talking about assembly, and how does that work. We moved to how we allocate memory, why does this matter?
+We the last slide we see std::alloc is talking to our system (a kernel in this case).
+e.g. sometimes we are just talking to a kernel instead of talking to the cpu directly.
+
+-->
+
 ---
 
 ## But before we move on, some fun things (AKA headaches)
@@ -444,6 +445,12 @@ Did you know?
 - It would be fun, but you probably shouldn't think about doing this
 
 </v-clicks>
+
+---
+layout: fact
+---
+
+## What if we had _one_ kernel that was understood by _all_ platforms, and could run things _anywhere_?
 
 ---
 layout: image-right
