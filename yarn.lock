@@ -96,6 +96,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@iconify-json/logos@npm:^1.1.13":
+  version: 1.1.13
+  resolution: "@iconify-json/logos@npm:1.1.13"
+  dependencies:
+    "@iconify/types": "*"
+  checksum: 1ae037b5e68eadaa1b2de8f113bb44957a207ff368db3ab9fc6c22c942d5cb7c2e5392aa69f28ac17929f93ed2da73eb090ba0cae65b2d880d0a9d9b8fc3e77b
+  languageName: node
+  linkType: hard
+
 "@iconify-json/ph@npm:^1.1.2":
   version: 1.1.2
   resolution: "@iconify-json/ph@npm:1.1.2"
@@ -852,11 +861,11 @@ __metadata:
   linkType: hard
 
 "acorn@npm:^8.7.1":
-  version: 8.7.1
-  resolution: "acorn@npm:8.7.1"
+  version: 8.8.0
+  resolution: "acorn@npm:8.8.0"
   bin:
     acorn: bin/acorn
-  checksum: aca0aabf98826717920ac2583fdcad0a6fbe4e583fdb6e843af2594e907455aeafe30b1e14f1757cd83ce1776773cf8296ffc3a4acf13f0bd3dfebcf1db6ae80
+  checksum: 7270ca82b242eafe5687a11fea6e088c960af712683756abf0791b68855ea9cace3057bd5e998ffcef50c944810c1e0ca1da526d02b32110e13c722aa959afdc
   languageName: node
   linkType: hard
 
@@ -4451,7 +4460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unplugin-icons@npm:^0.14.6":
+"unplugin-icons@npm:^0.14.6, unplugin-icons@npm:^0.14.7":
   version: 0.14.7
   resolution: "unplugin-icons@npm:0.14.7"
   dependencies:
@@ -4712,9 +4721,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "what-the-wasm@workspace:."
   dependencies:
+    "@iconify-json/logos": ^1.1.13
     "@slidev/cli": ^0.34.3
     "@slidev/theme-default": ^0.21.2
     gh-pages: ^4.0.0
+    unplugin-icons: ^0.14.7
   languageName: unknown
   linkType: soft
 

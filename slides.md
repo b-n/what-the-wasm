@@ -876,3 +876,17 @@ Ryan Lopopolo @_lopopolo
 - https://www.artichokeruby.org/
 
 Everyone on stackoverflow over the last million years asking questions like what I've tried to answer in this presentation
+
+---
+layout: cover
+---
+
+<style>
+.my-auto {
+  @apply text-2xl
+}
+</style>
+
+- <logos-twitter /> @nzchicken - rarely
+- <logos-github-octocat class="rounded-xl bg-white"/> /b-n - more commonly
+- <logos-github-icon class="rounded-full bg-white" /> github.com/b-n/what-the-wasm - this talk
